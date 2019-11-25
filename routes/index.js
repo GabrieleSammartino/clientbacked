@@ -454,8 +454,6 @@ router.post('/client', upload.fields([{
                 categoryId: req.body.categoryId,
                 exchangeId: req.body.exchangeId,
                 stateId: req.body.stateId,
-                typoOpp: req.body.typoOpp,
-                descOpp: req.body.descOpp,
                 note: req.body.note,
                 typoAct: req.body.typoAct,
                 url: req.body.url,
@@ -537,6 +535,20 @@ router.post('/client', upload.fields([{
     });
 
 
+});
+router.put('/client', function (req, res, next) {
+    console.log("req.body",req.body);
+    Client.findOne({_id: req.body._id}).exec(function (err, Client) {
+        if (err) return res.status(500).json({message: 'Cliente non trovato'});
+        if (!Client) return res.status(404).json({message: 'Cliente non trovato'});
+        for (key in req.body) {
+            Client[key] = req.body[key];
+        }
+        Client.save(function (err) {
+            if (err) return res.status(500).json({message: 'Non riesco a salvare' + err});
+            res.json(Client);
+        })
+    });
 });
 
 router.put('/boh:id', function (req, res, next) {
